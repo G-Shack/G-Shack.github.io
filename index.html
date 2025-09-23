@@ -362,10 +362,11 @@
         }
 
         .feature-icon {
-            font-size: 3rem;
-            color: var(--accent-color);
-            margin-bottom: 1.5rem;
             display: block;
+            margin: 0 auto 1rem;
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
         }
 
         .feature-card h3 {
@@ -431,41 +432,16 @@
         }
 
         .mockup-placeholder {
-            width: 300px;
-            height: 640px;
-            background: rgb(0, 0, 0);
-            border-radius: 28px;
-            margin: 0 auto;
-            position: relative;
-            box-shadow: var(--shadow-heavy);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: 600;
+            width: 130%;
+            height: 130%;
         }
 
         .mockup-placeholder img {
             width: calc(100% - 20px);
             height: calc(100% - 20px);
-            object-fit: cover;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) inset;
+
             display: block;
         }
-
-        /* .mockup-placeholder::before {
-            content: '';
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 3px;
-        } */
 
         /* Stats Section */
         .stats {
@@ -649,7 +625,7 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#" class="logo">
-                <!-- <img src="extras/favicon.png" alt="Kanch" class="logo-img"> -->
+                <img src="extras/favicon.png" alt="Kanch" class="logo-img">
                 Kanch
             </a>
             <ul class="nav-links">
@@ -699,42 +675,42 @@
 
             <div class="features-grid">
                 <div class="feature-card fade-in">
-                    <i class="fas fa-calculator feature-icon"></i>
+                    <img src="extras/calculator.png" class="feature-icon" alt="calculator">
                     <h3>Advanced Calculations</h3>
                     <p>Industry-specific calculations for glass dimensions, chargeable rules, polish calculations, and
                         area measurements with support for both mm and inches.</p>
                 </div>
 
                 <div class="feature-card fade-in">
-                    <i class="fas fa-table feature-icon"></i>
+                    <img src="extras/excel.png" class="feature-icon" alt="excel">
                     <h3>Excel-like Interface</h3>
                     <p>15-column table interface with copy, paste, select cells functionality. Seamless integration with
                         external spreadsheet applications.</p>
                 </div>
 
                 <div class="feature-card fade-in">
-                    <i class="fas fa-file-pdf feature-icon"></i>
+                    <img src="extras/pdf.png" class="feature-icon" alt="pdf">
                     <h3>Professional PDFs</h3>
                     <p>Generate professional invoice PDFs with your company branding, complete calculations, and bank
                         details for seamless business operations.</p>
                 </div>
 
                 <div class="feature-card fade-in">
-                    <i class="fas fa-mobile-alt feature-icon"></i>
+                    <img src="extras/crossplatform.png" class="feature-icon" alt="cross-platform">
                     <h3>Cross-Platform</h3>
                     <p>Available on desktop, mobile, and web. Your data syncs across all devices with Firebase real-time
                         synchronization.</p>
                 </div>
 
                 <div class="feature-card fade-in">
-                    <i class="fas fa-ruler feature-icon"></i>
+                    <img src="extras/measure.png" class="feature-icon" alt="measure">
                     <h3>Dimension Handling</h3>
                     <p>Support for both metric (mm) and imperial (inches) measurements with mixed fraction input and
                         automatic conversions.</p>
                 </div>
 
                 <div class="feature-card fade-in">
-                    <i class="fas fa-building feature-icon"></i>
+                    <img src="extras/company.png" class="feature-icon" alt="company">
                     <h3>Company Management</h3>
                     <p>Complete company profile setup with logo upload, GST details, banking information, and UPI
                         integration for payments.</p>
@@ -769,7 +745,7 @@
                 </div>
                 <div class="app-mockup fade-in">
                     <div class="mockup-placeholder">
-                        <img src="extras/screenshot.png" alt="App screenshot">
+                        <img src="extras/MobileMockupKanch.png" alt="App screenshot">
                     </div>
                 </div>
             </div>
