@@ -106,6 +106,16 @@
             color: var(--accent-color);
         }
 
+        .logo-img {
+            margin-right: 0.5rem;
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            border-radius: 6px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
         .nav-links {
             display: flex;
             list-style: none;
@@ -422,9 +432,9 @@
 
         .mockup-placeholder {
             width: 300px;
-            height: 600px;
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            border-radius: 30px;
+            height: 640px;
+            background: rgb(0, 0, 0);
+            border-radius: 28px;
             margin: 0 auto;
             position: relative;
             box-shadow: var(--shadow-heavy);
@@ -436,7 +446,16 @@
             font-weight: 600;
         }
 
-        .mockup-placeholder::before {
+        .mockup-placeholder img {
+            width: calc(100% - 20px);
+            height: calc(100% - 20px);
+            object-fit: cover;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) inset;
+            display: block;
+        }
+
+        /* .mockup-placeholder::before {
             content: '';
             position: absolute;
             top: 20px;
@@ -446,7 +465,7 @@
             height: 6px;
             background: rgba(255, 255, 255, 0.3);
             border-radius: 3px;
-        }
+        } */
 
         /* Stats Section */
         .stats {
@@ -630,7 +649,7 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#" class="logo">
-                <i class="fas fa-glass-martini"></i>
+                <!-- <img src="extras/favicon.png" alt="Kanch" class="logo-img"> -->
                 Kanch
             </a>
             <ul class="nav-links">
@@ -750,11 +769,7 @@
                 </div>
                 <div class="app-mockup fade-in">
                     <div class="mockup-placeholder">
-                        <div>
-                            <i class="fas fa-glass-martini"
-                                style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
-                            <p>Kanch App<br>Coming Soon</p>
-                        </div>
+                        <img src="extras/screenshot.png" alt="App screenshot">
                     </div>
                 </div>
             </div>
