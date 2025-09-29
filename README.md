@@ -46,4 +46,4 @@ To test locally, simply open `index.html` in a web browser. All styling is embed
 
 ## Contact
 
-For questions about these landing pages, contact: support@kanch.app# kanch-glass-invoice-maker
+For questions about these landing pages, contact: kanch.help@gmail.com# kanch-glass-invoice-maker

@@ -643,7 +643,8 @@
                     </div>
                     <div class="faq-answer">
                         <p>If you encounter any issues: 1) Try restarting the app first, 2) Check if your app is updated
-                            to the latest version, 3) Contact our support team at support@kanch.app with details about
+                            to the latest version, 3) Contact our support team at kanch.help@gmail.com with details
+                            about
                             the problem, device type, and steps to reproduce the issue. Include screenshots if helpful.
                             We typically respond within 24 hours.</p>
                     </div>
@@ -711,19 +712,19 @@
                         <i class="fas fa-envelope"></i>
                         <h3>Email Support</h3>
                         <p>Get detailed help via email. We typically respond within 24 hours.</p>
-                        <a href="mailto:support@kanch.app">support@kanch.app</a>
+                        <a href="mailto:kanch.help@gmail.com">kanch.help@gmail.com</a>
                     </div>
                     <div class="contact-method">
                         <i class="fas fa-bug"></i>
                         <h3>Bug Reports</h3>
                         <p>Report technical issues, bugs, or unexpected behavior in the app.</p>
-                        <a href="mailto:support@kanch.app?subject=Bug Report">Report a Bug</a>
+                        <a href="mailto:kanch.help@gmail.com?subject=Bug Report">Report a Bug</a>
                     </div>
                     <div class="contact-method">
                         <i class="fas fa-lightbulb"></i>
                         <h3>Feature Requests</h3>
                         <p>Suggest new features or improvements for future app updates.</p>
-                        <a href="mailto:support@kanch.app?subject=Feature Request">Suggest Feature</a>
+                        <a href="mailto:kanch.help@gmail.com?subject=Feature Request">Suggest Feature</a>
                     </div>
                 </div>
 
@@ -800,13 +801,13 @@
             const message = formData.get('message');
 
             // Create mailto link
-            const mailtoLink = `mailto:support@kanch.app?subject=${encodeURIComponent(`Support: ${subject} - ${name}`)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\nSubject: ${subject}\n\nMessage:\n${message}`)}`;
+            const mailtoLink = `mailto:kanch.help@gmail.com?subject=${encodeURIComponent(`Support: ${subject} - ${name}`)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\nSubject: ${subject}\n\nMessage:\n${message}`)}`;
 
             // Open email client
             window.location.href = mailtoLink;
 
             // Show confirmation
-            alert('Thank you for contacting us! Your email client should open with a pre-filled message. If it doesn\'t open automatically, please email us directly at support@kanch.app');
+            alert('Thank you for contacting us! Your email client should open with a pre-filled message. If it doesn\'t open automatically, please email us directly at kanch.help@gmail.com');
 
             // Reset form
             this.reset();
