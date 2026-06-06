@@ -1,16 +1,16 @@
 {
-    "name": "Kanch - Glass Invoice Maker",
-    "short_name": "Kanch",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#FFFFFF",
-    "theme_color": "#00639A",
-    "description": "Professional glass invoice maker for the glass industry",
-    "icons": [
-        {
-            "src": "/extras/favicon.png",
-            "type": "image/png",
-            "sizes": "48x48"
-        }
-    ]
+  "name": "Kanch - Glass Invoice Maker",
+  "short_name": "Kanch",
+  "description": "Invoicing built for India's glass trade.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF9F6",
+  "theme_color": "#0D5853",
+  "icons": [
+    {
+      "src": "design-system/assets/logo-mark.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ]
 }

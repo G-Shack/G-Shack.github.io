@@ -1,0 +1,235 @@
+/* ============================================================
+   KANCH — Color & Type Tokens
+   B2B SaaS for the Indian glass trade.
+   Design intent: precise, paper-meets-glass, calm clarity.
+   ============================================================ */
+
+/* ---- Fonts (Google Fonts) ----------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap');
+
+:root {
+  /* ============================================================
+     COLOR — Primary "Glass Edge"
+     The green-teal you see looking through the edge of a thick
+     glass sheet. Cool, technical, distinct from generic SaaS blue.
+     ============================================================ */
+  --glass-50:  #ECF6F4;
+  --glass-100: #D4ECE8;
+  --glass-200: #A8D8D0;
+  --glass-300: #6FBDB3;
+  --glass-400: #3CA197;
+  --glass-500: #168A80;   /* primary */
+  --glass-600: #0F6E66;
+  --glass-700: #0D5853;
+  --glass-800: #0B413E;
+  --glass-900: #082B29;
+  --glass-950: #041817;
+
+  /* ---- Accent "Saffron Seal" — invoice stamp / approved -------
+     Warm, paper-stamp orange. Used SPARINGLY: totals, due, CTAs.
+     References Indian context without being on-the-nose.        */
+  --saffron-50:  #FDF4EB;
+  --saffron-100: #FAE6CE;
+  --saffron-200: #F4C893;
+  --saffron-300: #ECA85A;
+  --saffron-400: #E08A2E;
+  --saffron-500: #C26F14;   /* accent */
+  --saffron-600: #9A5710;
+  --saffron-700: #74420D;
+
+  /* ---- Neutrals — "Paper & Graphite" --------------------------
+     Slightly warm off-whites (invoice paper) against cool slate. */
+  --paper-0:   #FFFFFF;
+  --paper-50:  #FAF9F6;   /* canvas / app bg */
+  --paper-100: #F4F2EC;   /* subtle sections */
+  --paper-200: #E9E6DD;   /* borders on paper */
+
+  --ink-50:   #F5F6F7;
+  --ink-100:  #E6E8EB;
+  --ink-200:  #CFD3D9;
+  --ink-300:  #A8AEB8;
+  --ink-400:  #767D88;
+  --ink-500:  #525964;
+  --ink-600:  #383E47;
+  --ink-700:  #232831;
+  --ink-800:  #161A21;
+  --ink-900:  #0B0E13;
+
+  /* ---- Semantic — status ------------------------------------- */
+  --success-50:  #ECF7EE;
+  --success-500: #2F9E44;
+  --success-700: #1F6F2F;
+
+  --warn-50:  #FFF7E6;
+  --warn-500: #E08A2E;
+  --warn-700: #8A4F12;
+
+  --danger-50:  #FCEDED;
+  --danger-500: #D94343;
+  --danger-700: #93202B;
+
+  --info-50:  #ECF2FB;
+  --info-500: #2E6BD3;
+  --info-700: #1B4490;
+
+  /* ---- Surface roles (light theme defaults) ------------------ */
+  --bg-canvas:    var(--paper-50);
+  --bg-surface:   var(--paper-0);
+  --bg-raised:    var(--paper-0);
+  --bg-sunken:    var(--paper-100);
+  --bg-inverse:   var(--ink-800);
+
+  --fg-primary:   var(--ink-800);
+  --fg-secondary: var(--ink-500);
+  --fg-tertiary:  var(--ink-400);
+  --fg-on-brand:  var(--paper-0);
+  --fg-on-dark:   var(--paper-0);
+  --fg-link:      var(--glass-600);
+
+  --border-subtle:  var(--ink-100);
+  --border-default: var(--ink-200);
+  --border-strong:  var(--ink-300);
+  --border-brand:   var(--glass-500);
+
+  --brand:          var(--glass-500);
+  --brand-hover:    var(--glass-600);
+  --brand-pressed:  var(--glass-700);
+  --brand-soft-bg:  var(--glass-50);
+
+  --accent:         var(--saffron-500);
+  --accent-soft-bg: var(--saffron-50);
+
+  /* ============================================================
+     TYPE — families
+     ============================================================ */
+  --font-sans:    'Geist', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+  --font-mono:    'Geist Mono', ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* ---- Type scale (modular, ~1.2 ratio at small sizes,
+     bigger jumps at display) ----------------------------------- */
+  --fs-3xs:  10px;
+  --fs-2xs:  11px;
+  --fs-xs:   12px;
+  --fs-sm:   13px;
+  --fs-md:   14px;   /* base UI */
+  --fs-lg:   15px;
+  --fs-xl:   17px;
+  --fs-2xl:  20px;
+  --fs-3xl:  24px;
+  --fs-4xl:  30px;
+  --fs-5xl:  38px;
+  --fs-6xl:  48px;
+  --fs-7xl:  64px;
+  --fs-8xl:  84px;
+
+  --lh-tight:   1.15;
+  --lh-snug:    1.3;
+  --lh-normal:  1.5;
+  --lh-relaxed: 1.65;
+
+  --tracking-tight:  -0.02em;
+  --tracking-snug:   -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide:   0.04em;
+  --tracking-caps:   0.08em;
+
+  --fw-light:   300;
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semi:    600;
+  --fw-bold:    700;
+
+  /* ============================================================
+     SPACING — 4px base
+     ============================================================ */
+  --space-0:  0;
+  --space-1:  2px;
+  --space-2:  4px;
+  --space-3:  8px;
+  --space-4:  12px;
+  --space-5:  16px;
+  --space-6:  20px;
+  --space-7:  24px;
+  --space-8:  32px;
+  --space-9:  40px;
+  --space-10: 48px;
+  --space-11: 64px;
+  --space-12: 80px;
+  --space-13: 96px;
+
+  /* ============================================================
+     RADIUS — calm, geometric. We hint at "glass pane" with
+     slightly sharper corners than typical SaaS (6/8/10, not 16).
+     ============================================================ */
+  --radius-xs: 3px;
+  --radius-sm: 5px;
+  --radius-md: 7px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-2xl: 20px;
+  --radius-full: 999px;
+
+  /* ============================================================
+     ELEVATION — paper on paper. Shadows are crisp + cool,
+     never blurry purple. Plus a "brand glow" for hero CTAs.
+     ============================================================ */
+  --shadow-xs:  0 1px 0 rgba(11,14,19,0.04), 0 1px 2px rgba(11,14,19,0.04);
+  --shadow-sm:  0 1px 0 rgba(11,14,19,0.04), 0 2px 6px rgba(11,14,19,0.06);
+  --shadow-md:  0 2px 4px rgba(11,14,19,0.04), 0 6px 18px rgba(11,14,19,0.08);
+  --shadow-lg:  0 4px 8px rgba(11,14,19,0.05), 0 16px 36px rgba(11,14,19,0.10);
+  --shadow-xl:  0 8px 16px rgba(11,14,19,0.06), 0 32px 64px rgba(11,14,19,0.14);
+
+  --shadow-inset:     inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(11,14,19,0.04);
+  --shadow-focus:     0 0 0 3px rgba(22,138,128,0.25);
+  --shadow-focus-err: 0 0 0 3px rgba(217,67,67,0.22);
+  --shadow-glass:     0 0 0 1px rgba(22,138,128,0.08), 0 12px 30px rgba(22,138,128,0.12);
+
+  /* ============================================================
+     MOTION — quick, mechanical, calm. No bounce.
+     ============================================================ */
+  --ease-out:  cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-in:   cubic-bezier(0.55, 0, 0.68, 0.30);
+  --ease-io:   cubic-bezier(0.65, 0, 0.35, 1);
+
+  --dur-fast: 120ms;
+  --dur-base: 180ms;
+  --dur-slow: 280ms;
+
+  /* ---- Layout / measure -------------------------------------- */
+  --measure-prose: 64ch;
+  --container-app:  1440px;
+  --container-doc:  920px;
+}
+
+/* ============================================================
+   Semantic text classes — drop these on elements directly.
+   ============================================================ */
+.t-display-xl { font-family: var(--font-display); font-weight: 400; font-size: var(--fs-8xl); line-height: var(--lh-tight); letter-spacing: var(--tracking-tight); color: var(--fg-primary); }
+.t-display-lg { font-family: var(--font-display); font-weight: 400; font-size: var(--fs-7xl); line-height: var(--lh-tight); letter-spacing: var(--tracking-tight); color: var(--fg-primary); }
+.t-display-md { font-family: var(--font-display); font-weight: 400; font-size: var(--fs-6xl); line-height: var(--lh-tight); letter-spacing: var(--tracking-snug); color: var(--fg-primary); }
+
+.t-h1 { font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-5xl); line-height: var(--lh-tight);   letter-spacing: var(--tracking-tight); color: var(--fg-primary); }
+.t-h2 { font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-4xl); line-height: var(--lh-snug);    letter-spacing: var(--tracking-snug);  color: var(--fg-primary); }
+.t-h3 { font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-3xl); line-height: var(--lh-snug);    letter-spacing: var(--tracking-snug);  color: var(--fg-primary); }
+.t-h4 { font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-2xl); line-height: var(--lh-snug);    color: var(--fg-primary); }
+.t-h5 { font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-xl);  line-height: var(--lh-snug);    color: var(--fg-primary); }
+.t-h6 { font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-md);  line-height: var(--lh-snug);    color: var(--fg-primary); text-transform: uppercase; letter-spacing: var(--tracking-caps); }
+
+.t-body-lg { font-family: var(--font-sans); font-weight: 400; font-size: var(--fs-lg); line-height: var(--lh-relaxed); color: var(--fg-primary); }
+.t-body    { font-family: var(--font-sans); font-weight: 400; font-size: var(--fs-md); line-height: var(--lh-normal);  color: var(--fg-primary); }
+.t-body-sm { font-family: var(--font-sans); font-weight: 400; font-size: var(--fs-sm); line-height: var(--lh-normal);  color: var(--fg-secondary); }
+
+.t-label    { font-family: var(--font-sans); font-weight: 500; font-size: var(--fs-sm); line-height: var(--lh-snug); color: var(--fg-primary); }
+.t-caption  { font-family: var(--font-sans); font-weight: 400; font-size: var(--fs-xs); line-height: var(--lh-snug); color: var(--fg-tertiary); }
+.t-overline { font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-2xs); line-height: var(--lh-snug); color: var(--fg-tertiary); text-transform: uppercase; letter-spacing: var(--tracking-caps); }
+
+.t-mono    { font-family: var(--font-mono); font-weight: 400; font-size: var(--fs-sm); line-height: var(--lh-snug);   color: var(--fg-primary); font-variant-numeric: tabular-nums; }
+.t-num     { font-family: var(--font-sans); font-variant-numeric: tabular-nums; }
+.t-num-mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-feature-settings: 'zero' on; }
+
+.t-eyebrow { font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-xs); line-height: 1; color: var(--brand); text-transform: uppercase; letter-spacing: var(--tracking-caps); }
+
+/* Italic display utility — the Instrument Serif italic is the
+   signature voice mark used on hero copy and marketing. */
+.t-display-italic { font-family: var(--font-display); font-style: italic; font-weight: 400; }

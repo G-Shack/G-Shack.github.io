@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Kanch">
+  <path d="M14 10 L54 6 L50 54 L10 58 Z" fill="#0B0E13"></path>
+  <path d="M22 11 L26 10.6 L20 57 L16 57.4 Z" fill="#ffffff" opacity="0.14"></path>
+  <g stroke="#FAF9F6" stroke-width="3.4" stroke-linecap="square" fill="none">
+    <line x1="22" y1="18" x2="20" y2="50"></line>
+    <line x1="42" y1="16" x2="21" y2="34"></line>
+    <line x1="21" y1="34" x2="44" y2="50"></line>
+  </g>
+  <path d="M42 16 L48 14.5 L46 19 Z" fill="#FAF9F6"></path>
+</svg>
