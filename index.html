@@ -77,7 +77,7 @@
     background:
       radial-gradient(60% 60% at 88% -10%, rgba(22,138,128,0.09), transparent 60%),
       linear-gradient(180deg, var(--glass-50) 0%, transparent 42%);}
-  .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr 0.95fr;gap:56px;align-items:center;}
+  .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,0.95fr);gap:56px;align-items:center;}
   .hero h1{font-family:var(--font-sans);font-weight:600;font-size:clamp(40px,5.4vw,72px);
     line-height:1.04;letter-spacing:-0.03em;color:var(--ink-900);margin:18px 0 0;}
   .hero h1 .it{font-weight:400;letter-spacing:-0.01em;}
@@ -89,13 +89,14 @@
 
   /* ---------- app mock (shared card chrome) ---------- */
   .mock{background:var(--bg-surface);border:1px solid var(--border-default);border-radius:var(--radius-xl);
-    box-shadow:var(--shadow-lg);overflow:hidden;}
+    box-shadow:var(--shadow-lg);overflow:hidden;max-width:100%;}
   .mock-bar{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border-subtle);background:var(--paper-50);}
   .mock-bar .dots{display:flex;gap:6px;}
   .mock-bar .dots i{width:9px;height:9px;border-radius:50%;background:var(--ink-200);display:block;}
   .mock-bar .url{margin-left:6px;font-family:var(--font-mono);font-size:var(--fs-2xs);color:var(--fg-tertiary);
     background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:4px 10px;}
-  .hero-app{position:relative;}
+  .hero-app{position:relative;min-width:0;}
+  .hero-copy{min-width:0;}
   .hero-app .float{position:absolute;z-index:2;background:var(--bg-surface);border:1px solid var(--border-default);
     border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:12px 14px;}
   .float-frac{top:-22px;right:-14px;}
@@ -277,7 +278,7 @@
 
   /* ---------- responsive ---------- */
   @media (max-width:980px){
-    .hero-grid{grid-template-columns:1fr;gap:64px;}
+    .hero-grid{grid-template-columns:minmax(0,1fr);gap:64px;}
     .hero p.lede{max-width:48ch;}
     .inside-grid{grid-template-columns:1fr;gap:40px;}
     .feat-grid{grid-template-columns:repeat(2,1fr);}
@@ -287,20 +288,328 @@
     .price-wrap{grid-template-columns:1fr;}
     .foot-grid{grid-template-columns:1fr 1fr;gap:30px;}
   }
+  /* collapse the nav to a hamburger early enough that the links + buttons never overflow */
+  @media (max-width:900px){
+    .nav-links{display:none;}
+    .nav .btn-ghost.nav-cta{display:none;}
+    .nav .btn-primary{margin-left:auto;}
+    .hamb{display:inline-flex;background:none;border:0;color:var(--ink-800);cursor:pointer;margin-left:10px;}
+  }
   @media (max-width:640px){
     .wrap{padding:0 20px;}
-    .nav-links{display:none;}
-    .nav .btn-ghost{display:none;}
-    .hamb{display:inline-flex;margin-left:auto;background:none;border:0;color:var(--ink-800);cursor:pointer;}
     .hero{padding:56px 0 48px;}
-    .hero-stats{gap:20px;flex-wrap:wrap;}
+    .hero-stats{gap:20px 24px;flex-wrap:wrap;}
+    .hero-stats .s{min-width:64px;}
     .feat-grid{grid-template-columns:1fr;}
     .float-frac{right:-4px;top:-16px;}
     .float-due{left:-6px;}
     .foot-grid{grid-template-columns:1fr;}
     section.band{padding:64px 0;}
     .pi-summary{grid-template-columns:1fr 1fr;}
+    /* keep the hero invoice mock inside the screen: drop low-value columns + fit the rest */
+    .grid-tbl{table-layout:fixed;}
     .grid-tbl .hide-sm{display:none;}
+    .grid-tbl th,.grid-tbl td{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  }
+
+  /* ============================================================
+     REVAMP ADDITIONS
+     Windows download CTA · interactive fraction keypad ·
+     cutting-plan drawing showcase · 3D document stack ·
+     scroll reveals · trust strip. All tokens, calm motion.
+     ============================================================ */
+
+  /* ---- Windows download button (the "native app" path) ------- */
+  .btn-win{background:var(--ink-900);color:#fff;border-color:var(--ink-900);box-shadow:var(--shadow-sm);}
+  .btn-win:hover{background:var(--ink-800);box-shadow:var(--shadow-md);transform:translateY(-1px);}
+  .btn-win:active{transform:translateY(0);}
+  .btn-win .winmark{width:16px;height:16px;flex:0 0 auto;}
+  .btn-win .sub{font-weight:500;font-size:var(--fs-2xs);color:var(--ink-300);letter-spacing:0.02em;margin-left:2px;}
+  /* nav download = lighter, ghost+glyph so the teal primary stays loudest */
+  .btn-ghost .winmark{width:15px;height:15px;flex:0 0 auto;color:var(--ink-700);}
+
+  /* ---- Trust / outcome strip under the hero ------------------ */
+  .trust{display:flex;flex-wrap:wrap;align-items:center;gap:12px 26px;margin-top:30px;}
+  .trust .ti{display:inline-flex;align-items:center;gap:9px;font-size:var(--fs-sm);color:var(--fg-secondary);}
+  .trust .ti svg{color:var(--brand);flex:0 0 auto;}
+  .trust .sep{width:1px;height:16px;background:var(--border-default);}
+
+  /* ============================================================
+     INTERACTIVE FRACTION KEYPAD (§ The system 01.01)
+     One 4×4 pad that swaps digits ⇄ fractions IN PLACE (½ toggles),
+     exactly like the in-app keyboard. No separate tray.
+     ============================================================ */
+  .kp{position:relative;}
+  .kp-screen{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;
+    background:var(--ink-900);border-radius:var(--radius-md);padding:10px 14px;margin-bottom:10px;
+    transition:box-shadow var(--dur-base) var(--ease-out);}
+  .kp-screen .lhs{display:flex;flex-direction:column;gap:3px;min-width:0;}
+  .kp-screen .lbl{font-family:var(--font-sans);font-weight:600;font-size:var(--fs-2xs);color:var(--ink-400);
+    text-transform:uppercase;letter-spacing:0.08em;}
+  .kp-screen .field{font-family:var(--font-mono);font-size:var(--fs-2xl);color:#fff;line-height:1;
+    font-variant-numeric:tabular-nums;display:flex;align-items:center;min-height:22px;}
+  .kp-screen .field .frac{color:var(--glass-300);}
+  .kp-screen .field .ph{color:var(--ink-400);}
+  .kp-screen .field .care{width:2px;height:19px;background:var(--glass-400);display:inline-block;margin-left:2px;
+    animation:kpcare 1.05s steps(1,end) infinite;}
+  @keyframes kpcare{50%{opacity:0;}}
+  .kp-screen .unit{font-family:var(--font-mono);font-size:var(--fs-2xs);color:var(--ink-400);
+    text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;}
+  .kp.done-flash .kp-screen{box-shadow:0 0 0 2px var(--glass-400),0 0 0 5px var(--glass-100);}
+
+  .keypad .k{cursor:pointer;user-select:none;position:relative;
+    transition:transform var(--dur-fast) var(--ease-out),background var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out);}
+  .keypad .k:hover{border-color:var(--border-strong);background:var(--paper-100);}
+  .keypad .k:active{transform:translateY(1px);}
+  .keypad .k.op{color:var(--fg-secondary);}
+  .keypad .k.del{color:var(--saffron-600);}
+  .keypad .k.confirm{background:var(--brand);color:#fff;border-color:var(--brand);}
+  .keypad .k.confirm:hover{background:var(--brand-hover);}
+  .keypad .k.frac{font-size:var(--fs-sm);}
+  /* the ½ toggle key — lit when fraction keys are showing */
+  .keypad .k.half{background:var(--glass-100);border-color:var(--glass-200);color:var(--glass-700);font-weight:600;overflow:visible;}
+  .kp.fracmode .keypad .k.half{background:var(--brand);border-color:var(--brand);color:#fff;}
+  /* nudge: soft pulse ring + tooltip until first use, to bait the ½ tap */
+  .keypad .k.half::after{content:"";position:absolute;inset:-3px;border-radius:var(--radius-md);
+    border:2px solid var(--glass-400);opacity:0;animation:halfpulse 2.4s var(--ease-out) infinite;pointer-events:none;}
+  @keyframes halfpulse{0%{opacity:0.65;transform:scale(0.96);}70%{opacity:0;transform:scale(1.14);}100%{opacity:0;}}
+  .keypad .k.half .hint{position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%);
+    font-family:var(--font-sans);font-weight:600;font-size:var(--fs-2xs);white-space:nowrap;
+    background:var(--ink-900);color:#fff;padding:4px 8px;border-radius:var(--radius-sm);letter-spacing:0.02em;
+    box-shadow:var(--shadow-md);transition:opacity var(--dur-base) var(--ease-out);z-index:3;}
+  .keypad .k.half .hint::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);
+    border:5px solid transparent;border-top-color:var(--ink-900);}
+  .kp.used .keypad .k.half::after{display:none;}
+  .kp.used .keypad .k.half .hint{opacity:0;pointer-events:none;}
+  .conv .reset{margin-left:auto;font-family:var(--font-sans);font-size:var(--fs-xs);font-weight:600;
+    color:var(--fg-tertiary);cursor:pointer;border:0;background:none;padding:4px 6px;border-radius:var(--radius-sm);}
+  .conv .reset:hover{color:var(--brand);background:var(--glass-50);}
+
+  /* ============================================================
+     CUTTING-PLAN DRAWING SHOWCASE (§ Drawing)
+     ============================================================ */
+  .draw-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:56px;align-items:center;margin-top:44px;}
+  .draw-copy h3{font-family:var(--font-sans);font-weight:600;font-size:var(--fs-2xl);letter-spacing:-0.01em;
+    color:var(--ink-900);margin-top:26px;}
+  .draw-copy h3:first-child{margin-top:0;}
+  .draw-feats{display:flex;flex-direction:column;gap:16px;margin-top:26px;}
+  .draw-feat{display:flex;gap:14px;align-items:flex-start;}
+  .draw-feat .di{flex:0 0 auto;width:34px;height:34px;border-radius:var(--radius-md);background:var(--glass-50);
+    border:1px solid var(--glass-100);display:flex;align-items:center;justify-content:center;color:var(--brand);}
+  .draw-feat .dt strong{display:block;font-size:var(--fs-md);font-weight:600;color:var(--ink-900);}
+  .draw-feat .dt span{display:block;font-size:var(--fs-sm);color:var(--fg-secondary);line-height:1.55;margin-top:3px;}
+
+  /* the editor mock */
+  .editor{background:var(--bg-surface);border:1px solid var(--border-default);border-radius:var(--radius-xl);
+    box-shadow:var(--shadow-lg);overflow:hidden;}
+  .ed-bar{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--border-subtle);background:var(--paper-50);}
+  .ed-bar .et{font-family:var(--font-sans);font-weight:600;font-size:var(--fs-sm);color:var(--ink-800);margin-right:auto;display:flex;align-items:center;gap:7px;}
+  .ed-bar .et .pin{font-family:var(--font-mono);font-size:var(--fs-2xs);color:var(--brand);}
+  .ed-bar .done{font-family:var(--font-sans);font-weight:600;font-size:var(--fs-2xs);color:#fff;background:var(--brand);
+    padding:5px 10px;border-radius:var(--radius-sm);display:inline-flex;gap:5px;align-items:center;}
+  .ed-tools{display:flex;flex-wrap:wrap;gap:5px;padding:9px 12px;border-bottom:1px solid var(--border-subtle);background:var(--bg-surface);}
+  .ed-tools .et-btn{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-2xs);font-weight:600;
+    color:var(--fg-secondary);background:var(--paper-50);border:1px solid var(--border-subtle);
+    border-radius:var(--radius-sm);padding:6px 9px;cursor:pointer;transition:all var(--dur-fast) var(--ease-out);}
+  .ed-tools .et-btn:hover{border-color:var(--border-strong);color:var(--ink-800);}
+  .ed-tools .et-btn.on{background:var(--brand);border-color:var(--brand);color:#fff;}
+  .ed-tools .et-div{width:1px;align-self:stretch;background:var(--border-subtle);margin:0 3px;}
+  .ed-tools .et-sw{width:16px;height:16px;border-radius:var(--radius-xs);border:1px solid rgba(11,14,19,0.15);cursor:pointer;}
+  .ed-stage{position:relative;background:
+    linear-gradient(var(--paper-100) 1px,transparent 1px) 0 0/22px 22px,
+    linear-gradient(90deg,var(--paper-100) 1px,transparent 1px) 0 0/22px 22px,var(--paper-50);
+    padding:28px;display:flex;justify-content:center;}
+  .a4{position:relative;width:300px;aspect-ratio:794/1123;background:#fff;border:1px solid var(--border-default);
+    box-shadow:var(--shadow-md);}
+  .a4 .pgno{position:absolute;top:7px;right:9px;font-family:var(--font-mono);font-size:8px;color:var(--ink-300);letter-spacing:0.1em;}
+  .a4 .gp{position:absolute;border:1.5px solid var(--glass-600);background:rgba(22,138,128,0.06);
+    display:flex;align-items:center;justify-content:center;transition:background var(--dur-base) var(--ease-out),box-shadow var(--dur-base) var(--ease-out),border-color var(--dur-base) var(--ease-out);}
+  .a4 .gp:hover{background:rgba(22,138,128,0.13);box-shadow:var(--shadow-sm);border-color:var(--brand);}
+  .a4 .gp .sr{font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--glass-700);background:rgba(255,255,255,0.7);border-radius:2px;padding:0 3px;}
+  .a4 .gp .dl,.a4 .gp .db{position:absolute;font-family:var(--font-mono);font-size:7.5px;color:var(--ink-600);background:#fff;padding:0 2px;white-space:nowrap;}
+  .a4 .gp .dl{top:-7px;left:50%;transform:translateX(-50%);}
+  .a4 .gp .db{left:-4px;top:50%;transform:translate(-100%,-50%);}
+  .a4 .note{position:absolute;font-family:var(--font-display);font-style:italic;font-size:11px;color:var(--saffron-600);transform:rotate(-5deg);}
+  .ed-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 12px;border-top:1px solid var(--border-subtle);
+    background:var(--paper-50);font-family:var(--font-mono);font-size:var(--fs-2xs);color:var(--fg-tertiary);}
+  .ed-foot .grow{margin-left:auto;}
+  .ed-foot strong{color:var(--brand);font-weight:600;}
+  .ed-pages{display:flex;gap:5px;}
+  .ed-pages i{width:13px;height:18px;border:1px solid var(--border-default);border-radius:1px;background:#fff;display:block;}
+  .ed-pages i.on{border-color:var(--brand);box-shadow:0 0 0 1.5px var(--glass-200);}
+
+  /* ============================================================
+     DOCUMENT STACK (PI · Challan · GST) — real A4-portrait sheets,
+     spread in a cascade. Hover/focus/pin lifts a sheet forward.
+     Only the inner .sheet transforms; the .doc3d hit-box never
+     moves → no hover jitter.
+     ============================================================ */
+  .docstack{position:relative;width:100%;max-width:440px;margin:0 auto;height:540px;}
+  .docstack .hint3d{position:absolute;top:-30px;left:0;font-family:var(--font-sans);font-size:var(--fs-2xs);
+    font-weight:600;color:var(--fg-tertiary);display:inline-flex;align-items:center;gap:7px;z-index:5;}
+  .docstack .hint3d .pulse{width:6px;height:6px;border-radius:50%;background:var(--brand);animation:dotpulse 2s var(--ease-out) infinite;}
+  @keyframes dotpulse{0%{box-shadow:0 0 0 0 rgba(60,161,151,0.5);}70%{box-shadow:0 0 0 7px rgba(60,161,151,0);}100%{box-shadow:0 0 0 0 rgba(60,161,151,0);}}
+
+  .doc3d{position:absolute;width:250px;aspect-ratio:794/1123;cursor:pointer;outline:none;}
+  /* static cascade — rotation is fixed so the hit-box stays put */
+  .doc3d.d-gst {left:180px;top:0;   transform:rotate(3deg);}
+  .doc3d.d-chal{left:92px; top:46px;transform:rotate(1.25deg);}
+  .doc3d.d-pi  {left:0;    top:92px;transform:rotate(-1.5deg);}
+  .doc3d.d-gst {z-index:10;} .doc3d.d-chal{z-index:20;} .doc3d.d-pi{z-index:30;}
+  /* the visual sheet — this is what lifts forward */
+  .doc3d .sheet{position:absolute;inset:0;background:var(--paper-0);border:1px solid var(--border-default);
+    border-radius:var(--radius-sm);box-shadow:var(--shadow-md);overflow:hidden;
+    padding:13px 13px 12px 17px;display:flex;flex-direction:column;
+    transition:transform var(--dur-slow) var(--ease-out),box-shadow var(--dur-slow) var(--ease-out);}
+  .doc3d:hover,.doc3d:focus-visible{z-index:50;}
+  .doc3d:hover .sheet,.doc3d:focus-visible .sheet,
+  .docstack[data-pin="pi"]   .d-pi   .sheet,
+  .docstack[data-pin="chal"] .d-chal .sheet,
+  .docstack[data-pin="gst"]  .d-gst  .sheet{transform:translateY(-16px) scale(1.04);box-shadow:var(--shadow-xl);}
+  .docstack[data-pin="pi"] .d-pi,.docstack[data-pin="chal"] .d-chal,.docstack[data-pin="gst"] .d-gst{z-index:50;}
+
+  /* coloured left edge per doc */
+  .doc3d .sheet::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;}
+  .doc3d.d-pi   .sheet::before{background:linear-gradient(180deg,var(--glass-400),var(--glass-700));}
+  .doc3d.d-chal .sheet::before{background:linear-gradient(180deg,var(--ink-400),var(--ink-700));}
+  .doc3d.d-gst  .sheet::before{background:linear-gradient(180deg,var(--saffron-400),var(--saffron-600));}
+
+  /* header */
+  .doc3d .dh{display:flex;justify-content:space-between;gap:6px;align-items:flex-start;}
+  .doc3d .co-block{display:flex;gap:5px;align-items:flex-start;min-width:0;}
+  .doc3d .logo{width:17px;height:17px;border-radius:3px;flex:0 0 auto;background:linear-gradient(135deg,var(--glass-500),var(--glass-700));
+    display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-display);font-size:10px;}
+  .doc3d .co{min-width:0;}
+  .doc3d .co .nm{font-family:var(--font-display);font-size:11px;color:var(--ink-900);line-height:1;}
+  .doc3d .co .ad{font-size:5px;color:var(--ink-500);line-height:1.35;margin-top:2px;}
+  .doc3d .co .gstin{font-family:var(--font-mono);font-size:5px;color:var(--ink-600);margin-top:1px;}
+  .doc3d .dmeta{text-align:right;flex:0 0 auto;}
+  .doc3d .deyebrow{font-weight:700;font-size:5px;letter-spacing:0.1em;text-transform:uppercase;}
+  .doc3d.d-pi   .deyebrow{color:var(--glass-600);}
+  .doc3d.d-chal .deyebrow{color:var(--ink-500);}
+  .doc3d.d-gst  .deyebrow{color:var(--saffron-600);}
+  .doc3d .dtitle{font-family:var(--font-display);font-size:11px;color:var(--ink-900);line-height:1;margin-top:1px;}
+  .doc3d .dnum{font-family:var(--font-mono);font-size:5.5px;color:var(--ink-600);margin-top:2px;line-height:1.4;}
+
+  /* bill-to band */
+  .doc3d .billto{display:flex;justify-content:space-between;align-items:flex-end;gap:6px;margin-top:8px;
+    padding:4px 0;border-top:1px solid var(--ink-100);border-bottom:1px solid var(--ink-100);}
+  .doc3d .billto .l{font-size:5px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink-400);}
+  .doc3d .billto .v{font-family:var(--font-sans);font-weight:600;font-size:7.5px;color:var(--ink-900);}
+  .doc3d .billto .r{font-family:var(--font-mono);font-size:5px;color:var(--ink-500);text-align:right;}
+
+  /* line-item table */
+  .doc3d .tbl{margin-top:7px;}
+  .doc3d .tr{display:grid;gap:4px;padding:2.6px 0;border-bottom:1px solid var(--ink-50);align-items:center;
+    font-family:var(--font-mono);font-size:6px;color:var(--ink-700);font-variant-numeric:tabular-nums;}
+  .doc3d .tr.h{color:var(--ink-400);font-weight:700;letter-spacing:0.03em;text-transform:uppercase;font-size:5px;border-bottom:1px solid var(--ink-200);}
+  .doc3d .tr .nm{font-family:var(--font-sans);color:var(--ink-800);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .doc3d .tr .rr{text-align:right;}
+  .doc3d .tbl.pi   .tr{grid-template-columns:1fr 30px 34px;}
+  .doc3d .tbl.gst  .tr{grid-template-columns:1fr 22px 30px 28px;}
+  .doc3d .tbl.chal .tr{grid-template-columns:1fr 20px 30px;}
+  .doc3d .tr.ttl{font-weight:700;color:var(--ink-900);border-bottom:0;border-top:1px solid var(--ink-200);margin-top:1px;}
+
+  /* totals / grand */
+  .doc3d .sum{margin-top:auto;padding-top:8px;}
+  .doc3d .sl{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:6px;color:var(--ink-500);padding:1.4px 0;}
+  .doc3d .sl b{color:var(--ink-800);font-weight:600;}
+  .doc3d .grand{display:flex;justify-content:space-between;align-items:center;margin-top:5px;
+    background:var(--ink-900);color:#fff;border-radius:4px;padding:5px 9px;}
+  .doc3d .grand .gl{font-family:var(--font-sans);font-weight:600;font-size:5.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--glass-200);}
+  .doc3d .grand .gv{font-family:var(--font-mono);font-weight:700;font-size:11px;}
+
+  /* footer: bank + UPI QR, or signatures */
+  .doc3d .dfoot{display:flex;gap:8px;margin-top:8px;padding-top:7px;border-top:1px solid var(--ink-100);align-items:center;}
+  .doc3d .qr{width:30px;height:30px;flex:0 0 auto;border:1px solid var(--ink-200);border-radius:2px;
+    background:repeating-conic-gradient(var(--ink-900) 0% 25%,#fff 0% 50%) 0/6px 6px;}
+  .doc3d .bank{min-width:0;}
+  .doc3d .bank .l{font-size:5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-400);}
+  .doc3d .bank .v{font-family:var(--font-mono);font-size:5.5px;color:var(--ink-700);line-height:1.45;}
+  .doc3d .sign{display:flex;gap:12px;margin-top:8px;padding-top:18px;}
+  .doc3d .sign .s{flex:1;border-top:1px solid var(--ink-300);padding-top:3px;font-size:5px;color:var(--ink-500);text-align:center;}
+
+  /* subtle rotated stamp */
+  .doc3d .stamp{position:absolute;right:11px;top:70px;transform:rotate(-9deg);border:1.4px solid currentColor;
+    font-family:var(--font-sans);font-weight:700;font-size:6px;letter-spacing:0.08em;text-transform:uppercase;
+    padding:3px 5px;border-radius:3px;opacity:0.45;z-index:2;}
+  .doc3d.d-pi   .stamp{color:var(--saffron-600);}
+  .doc3d.d-gst  .stamp{color:var(--success-700);}
+  .doc3d.d-chal .stamp{color:var(--ink-400);}
+
+  /* toggle pills under the stack */
+  .docstack .dlabels{position:absolute;left:0;right:0;bottom:-6px;display:flex;justify-content:center;gap:8px;z-index:60;}
+  .docstack .dlabels button{font-family:var(--font-sans);font-size:var(--fs-2xs);font-weight:600;color:var(--fg-secondary);
+    background:var(--bg-surface);border:1px solid var(--border-default);border-radius:var(--radius-full);
+    padding:6px 13px;cursor:pointer;transition:color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),background var(--dur-fast) var(--ease-out);}
+  .docstack .dlabels button:hover{border-color:var(--brand);color:var(--brand);}
+  .docstack .dlabels button.on{background:var(--ink-900);border-color:var(--ink-900);color:#fff;}
+
+  /* ---- Featured Windows desktop card (Available section) ----- */
+  .winfeat{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:24px;
+    background:linear-gradient(180deg,var(--ink-900),var(--glass-900));color:#fff;
+    border:1px solid var(--ink-900);border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);
+    padding:26px 30px;margin-top:0;}
+  .winfeat .wicon{width:54px;height:54px;border-radius:var(--radius-lg);background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.14);display:flex;align-items:center;justify-content:center;color:#fff;flex:0 0 auto;}
+  .winfeat .wbody .tag{font-family:var(--font-sans);font-weight:600;font-size:var(--fs-2xs);letter-spacing:0.08em;
+    text-transform:uppercase;color:var(--glass-200);}
+  .winfeat .wbody h3{font-family:var(--font-sans);font-weight:600;font-size:var(--fs-2xl);color:#fff;margin-top:4px;letter-spacing:-0.01em;}
+  .winfeat .wbody p{font-size:var(--fs-sm);color:var(--glass-100);margin-top:6px;max-width:54ch;line-height:1.55;}
+  .winfeat .wbody .meta{display:flex;gap:8px 18px;flex-wrap:wrap;margin-top:13px;font-family:var(--font-mono);font-size:var(--fs-2xs);color:var(--glass-200);}
+  .winfeat .wbody .meta span{display:inline-flex;align-items:center;gap:6px;}
+  .winfeat .wbody .meta svg{color:var(--glass-300);}
+  .winfeat .wcta{display:flex;flex-direction:column;gap:8px;align-items:stretch;flex:0 0 auto;}
+  .winfeat .wcta .vh{font-family:var(--font-mono);font-size:var(--fs-2xs);color:var(--glass-300);text-align:center;}
+  .btn-light{background:#fff;color:var(--ink-900);border-color:#fff;box-shadow:var(--shadow-sm);}
+  .btn-light:hover{background:var(--paper-100);transform:translateY(-1px);box-shadow:var(--shadow-md);}
+  .btn-light .winmark{color:var(--ink-900);width:16px;height:16px;flex:0 0 auto;}
+  @media (max-width:760px){.winfeat{grid-template-columns:1fr;gap:18px;}}
+
+  /* ---- Pricing: billing toggle + discount framing ----------- */
+  .bill-toggle{display:inline-flex;background:var(--bg-sunken);border:1px solid var(--border-subtle);
+    border-radius:var(--radius-full);padding:4px;gap:4px;margin-top:26px;}
+  .bill-toggle button{font-family:var(--font-sans);font-weight:600;font-size:var(--fs-sm);color:var(--fg-secondary);
+    background:none;border:0;border-radius:var(--radius-full);padding:8px 18px;cursor:pointer;display:inline-flex;
+    align-items:center;gap:8px;transition:color var(--dur-fast) var(--ease-out),background var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out);}
+  .bill-toggle button.on{background:var(--bg-surface);color:var(--ink-900);box-shadow:var(--shadow-sm);}
+  .bill-toggle .save{font-family:var(--font-sans);font-size:var(--fs-2xs);font-weight:700;color:var(--brand);
+    background:var(--glass-50);border:1px solid var(--glass-200);border-radius:var(--radius-full);padding:1px 7px;}
+  .bill-toggle button.on .save{color:#fff;background:var(--brand);border-color:var(--brand);}
+  .price .save-pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-weight:700;
+    font-size:var(--fs-2xs);letter-spacing:0.02em;color:#fff;background:var(--accent);border-radius:var(--radius-full);
+    padding:3px 11px;align-self:flex-start;margin-bottom:12px;text-transform:uppercase;}
+  .price .pp .was{font-family:var(--font-mono);font-size:var(--fs-2xl);color:var(--fg-tertiary);
+    text-decoration:line-through;margin-right:10px;font-weight:500;align-self:center;}
+  .price.feat-plan .pp .was{color:var(--glass-300);}
+  .price .billed{font-family:var(--font-mono);font-size:var(--fs-xs);color:var(--fg-tertiary);margin-top:8px;}
+  .price.feat-plan .billed{color:var(--glass-200);}
+  .price .billed b{color:var(--fg-secondary);font-weight:600;}
+  .price.feat-plan .billed b{color:#fff;}
+
+  /* ============================================================
+     SCROLL REVEAL — subtle, calm, no bounce
+     ============================================================ */
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity 0.6s var(--ease-out),transform 0.6s var(--ease-out);}
+  .reveal.in{opacity:1;transform:none;}
+  .reveal.d1{transition-delay:0.06s;}.reveal.d2{transition-delay:0.12s;}.reveal.d3{transition-delay:0.18s;}
+
+  @media (max-width:980px){
+    .draw-grid{grid-template-columns:1fr;gap:40px;}
+  }
+  @media (max-width:640px){
+    .docstack{height:430px;max-width:340px;}
+    .doc3d{width:190px;}
+    .doc3d.d-gst{left:128px;top:0;}
+    .doc3d.d-chal{left:64px;top:36px;}
+    .doc3d.d-pi{left:0;top:72px;}
+    .a4{width:240px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    .keypad .k.half::after,.kp-screen .field .care,.docstack .hint3d .pulse{animation:none;}
+    .doc3d{transition:none;}
   }
 </style>
 </head>
@@ -323,20 +632,26 @@
     <nav class="nav-links">
       <a href="#system">The system</a>
       <a href="#features">Features</a>
+      <a href="#drawing">Drawing</a>
       <a href="#inside">Inside</a>
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
     </nav>
-    <a class="btn btn-ghost nav-cta" href="#pricing">Pricing</a>
+    <a class="btn btn-ghost nav-cta" href="https://github.com/G-Shack/kanch-desktop-releases/releases/latest/download/Kanch-Setup.exe" download>
+      <svg class="winmark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.4 10.3 4.3v6.9H3V5.4Zm8.4-1.2L21 3v8.2h-9.6V4.2ZM3 12.8h7.3v6.9L3 18.6v-5.8Zm8.4 0H21V21l-9.6-1.4v-6.8Z"/></svg>
+      <span class="win-txt">Windows</span>
+    </a>
     <a class="btn btn-primary" href="https://app.kanch.app">Open the app →</a>
     <button class="hamb" id="hambBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
   </div>
   <nav class="mobile-menu" id="mobileMenu" aria-label="Mobile">
     <a href="#system">The system</a>
     <a href="#features">Features</a>
+    <a href="#drawing">Cutting-plan drawings</a>
     <a href="#inside">Inside the app</a>
     <a href="#pricing">Pricing</a>
     <a href="#faq">FAQ</a>
+    <a href="https://github.com/G-Shack/kanch-desktop-releases/releases/latest/download/Kanch-Setup.exe" download>↓ Download for Windows</a>
     <a class="mm-cta" href="https://app.kanch.app">Open the app →</a>
   </nav>
 </header>
@@ -352,14 +667,23 @@
       <p class="lede">Mixed-fraction inches. Chargeable rules. Polish in running feet. Holes, cutouts, GST, PI numbers — finally an invoice tool that quotes the way your shop does.</p>
       <div class="hero-cta">
         <a class="btn btn-primary btn-lg" href="https://app.kanch.app">Open Kanch on the web →</a>
-        <a class="btn btn-ghost btn-lg" href="https://github.com/G-Shack/kanch-desktop-releases/releases/latest/download/Kanch-Setup.exe" download>↓ Download for Windows</a>
-        <a class="btn btn-ghost btn-lg" href="#system">See how it calculates</a>
+        <a class="btn btn-win btn-lg" href="https://github.com/G-Shack/kanch-desktop-releases/releases/latest/download/Kanch-Setup.exe" download>
+          <svg class="winmark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.4 10.3 4.3v6.9H3V5.4Zm8.4-1.2L21 3v8.2h-9.6V4.2ZM3 12.8h7.3v6.9L3 18.6v-5.8Zm8.4 0H21V21l-9.6-1.4v-6.8Z"/></svg>
+          Download for Windows<span class="sub">free · .exe</span>
+        </a>
+      </div>
+      <div class="trust" aria-label="Why shops switch">
+        <span class="ti"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>No card to start</span>
+        <span class="sep"></span>
+        <span class="ti"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Works on web &amp; Windows</span>
+        <span class="sep"></span>
+        <span class="ti"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Built with glass dealers</span>
       </div>
       <div class="hero-stats">
-        <div class="s"><div class="k">15</div><div class="l">column grid</div></div>
+        <div class="s"><div class="k" data-count="15">15</div><div class="l">column grid</div></div>
         <div class="s"><div class="k">mm · in</div><div class="l">+ mixed fractions</div></div>
         <div class="s"><div class="k">Real-time</div><div class="l">across devices</div></div>
-        <div class="s"><div class="k">7 days</div><div class="l">free, no card</div></div>
+        <div class="s"><div class="k" data-count="7" data-suffix=" days">7 days</div><div class="l">free, no card</div></div>
       </div>
     </div>
 
@@ -387,13 +711,13 @@
         <table class="grid-tbl">
           <thead>
             <tr>
-              <th>Sr</th><th>Glass type</th><th>Actual L</th><th>Actual B</th><th>Qty</th><th class="calc">Charg. area</th><th class="calc">Amount</th>
+              <th>Sr</th><th>Glass type</th><th class="hide-sm">Actual L</th><th class="hide-sm">Actual B</th><th>Qty</th><th class="calc">Charg. area</th><th class="calc">Amount</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td class="sr">1</td><td>Tuffon 12mm</td><td class="m"><span class="frac">47 3/4</span></td><td class="m">24</td><td class="m">3</td><td class="calc">24.000</td><td class="calc">₹3,600</td></tr>
-            <tr><td class="sr">2</td><td>Lacquered 5mm</td><td class="m">53</td><td class="m">24</td><td class="m">3</td><td class="calc">26.500</td><td class="calc">₹3,975</td></tr>
-            <tr><td class="sr">3</td><td>Mirror 6mm</td><td class="m"><span class="frac">50 1/2</span></td><td class="m">24</td><td class="m">2</td><td class="calc">16.834</td><td class="calc">₹2,525</td></tr>
+            <tr><td class="sr">1</td><td>Tuffon 12mm</td><td class="m hide-sm"><span class="frac">47 3/4</span></td><td class="m hide-sm">24</td><td class="m">3</td><td class="calc">24.000</td><td class="calc">₹3,600</td></tr>
+            <tr><td class="sr">2</td><td>Lacquered 5mm</td><td class="m hide-sm">53</td><td class="m hide-sm">24</td><td class="m">3</td><td class="calc">26.500</td><td class="calc">₹3,975</td></tr>
+            <tr><td class="sr">3</td><td>Mirror 6mm</td><td class="m hide-sm"><span class="frac">50 1/2</span></td><td class="m hide-sm">24</td><td class="m">2</td><td class="calc">16.834</td><td class="calc">₹2,525</td></tr>
           </tbody>
         </table>
       </div>
@@ -413,14 +737,19 @@
     <div class="sys">
       <div class="sys-row">
         <span class="sys-no">01.01</span>
-        <div><h3>Inches & mixed fractions, natively.</h3><p>A dedicated numeric keypad with a ½ key. Type <span class="mono">36 3/16</span> and Kanch handles the conversion, area and totals — without sending you to a calculator.</p></div>
+        <div><h3>Inches & mixed fractions, natively.</h3><p>A dedicated numeric keypad with a ½ key. Type <span class="mono">36</span>, tap <span class="mono">½</span>, pick the fraction — Kanch handles the conversion, area and totals without sending you to a calculator. <span style="color:var(--brand);font-weight:600;">Try it →</span></p></div>
         <div class="demo">
-          <div class="keypad">
-            <span class="k">1</span><span class="k">2</span><span class="k">3</span><span class="k">/</span>
-            <span class="k">4</span><span class="k">5</span><span class="k">6</span><span class="k">⌫</span>
-            <span class="k half">½</span><span class="k">0</span><span class="k">.</span><span class="k done">✓</span>
+          <div class="kp" id="kp">
+            <div class="kp-screen">
+              <div class="lhs">
+                <span class="lbl">Actual L</span>
+                <div class="field" id="kpField"><span class="whole">36</span><span class="care"></span></div>
+              </div>
+              <span class="unit">inches</span>
+            </div>
+            <div class="keypad" id="kpGrid"></div>
+            <div class="conv"><span id="kpConv"><b>36″</b> <span class="arr">→</span> actual L <b>36.000 in</b></span><button class="reset" id="kpReset" type="button">Reset</button></div>
           </div>
-          <div class="conv"><b>36 3/16″</b> <span class="arr">→</span> actual L <b>36.1875 in</b></div>
         </div>
       </div>
 
@@ -503,13 +832,87 @@
   </div>
 </section>
 
-<!-- ============ INSIDE ============ -->
-<section class="band alt" id="inside">
+<!-- ============ DRAWING (CUTTING PLAN) ============ -->
+<section class="band alt" id="drawing">
   <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow muted"><span class="mk"></span>§03 — Inside the app</span>
-      <h2>Six taps to a finished <span class="it">invoice.</span></h2>
-      <p>Open a new PI. Pick the customer. Type your first row — length, breadth, qty, glass type. Kanch does the rest, live, as you go.</p>
+    <div class="sec-head reveal">
+      <span class="eyebrow"><span class="mk"></span>§03 — Cutting-plan drawings</span>
+      <h2>Draw the cut. <span class="it">Send it with the bill.</span></h2>
+      <p>The only glass invoicing tool with a real cutting-plan editor built in. Lay your pieces on an A4 sheet at true proportions, label every edge, and Kanch appends the drawing to the PI PDF as original pages — so the shop floor cuts exactly what the customer approved.</p>
+    </div>
+    <div class="draw-grid">
+      <div class="editor reveal" id="editorMock" aria-label="Cutting-plan editor preview">
+        <div class="ed-bar">
+          <span class="et"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><circle cx="11" cy="11" r="2"/></svg> Drawing <span class="pin">#26-27/002</span></span>
+          <span class="done"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Done</span>
+        </div>
+        <div class="ed-tools" id="edTools">
+          <button class="et-btn on" data-tool><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l7.5 18 2.5-7 7-2.5L3 3z"/></svg>Select</button>
+          <button class="et-btn" data-tool><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>Pen</button>
+          <button class="et-btn" data-tool><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="5" y1="19" x2="19" y2="5"/></svg>Line</button>
+          <button class="et-btn" data-tool><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="14" rx="1"/></svg>Rect</button>
+          <button class="et-btn" data-tool><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/></svg>Circle</button>
+          <button class="et-btn" data-tool><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="12" y1="4" x2="12" y2="20"/><line x1="9" y1="20" x2="15" y2="20"/></svg>Text</button>
+          <span class="et-div"></span>
+          <span class="et-sw" style="background:#168A80" title="Glass teal"></span>
+          <span class="et-sw" style="background:#0B0E13" title="Ink"></span>
+          <span class="et-sw" style="background:#C26F14" title="Saffron"></span>
+          <span class="et-sw" style="background:#D94343" title="Cross"></span>
+        </div>
+        <div class="ed-stage">
+          <div class="a4">
+            <span class="pgno">A4 · PAGE 1</span>
+            <div class="gp" style="left:6%;top:5%;width:55%;height:25%;"><span class="sr">1</span><span class="dl">47¾″</span><span class="db">24″</span></div>
+            <div class="gp" style="left:64%;top:5%;width:30%;height:42%;"><span class="sr">2</span><span class="dl">24″</span><span class="db">53″</span></div>
+            <div class="gp" style="left:6%;top:34%;width:40%;height:29%;"><span class="sr">3</span><span class="dl">50½″</span><span class="db">24″</span></div>
+            <div class="gp" style="left:49%;top:51%;width:45%;height:21%;"><span class="sr">4</span><span class="dl">42″</span><span class="db">18″</span></div>
+            <div class="gp" style="left:6%;top:67%;width:38%;height:24%;"><span class="sr">5</span><span class="dl">36 3/16″</span><span class="db">20″</span></div>
+            <span class="note" style="left:50%;top:80%;">offcut →</span>
+          </div>
+        </div>
+        <div class="ed-foot">
+          <span class="ed-pages"><i class="on"></i><i></i></span>
+          <span>Page 1 of 2</span>
+          <span>·</span>
+          <span>5 glass pieces</span>
+          <span class="grow"></span>
+          <span>Appended to PI as <strong>Original</strong> pages</span>
+        </div>
+      </div>
+      <div class="draw-copy">
+        <div class="draw-feats">
+          <div class="draw-feat reveal d1">
+            <div class="di"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M4 9h16M9 3v18"/></svg></div>
+            <div class="dt"><strong>Pieces auto-placed at true scale</strong><span>Pull line items straight from the invoice — each pane lands on the sheet at real proportions, with length-to-breadth locked so a drag never distorts the cut.</span></div>
+          </div>
+          <div class="draw-feat reveal d1">
+            <div class="di"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 12l4-4M3 12l4 4M21 12l-4-4M21 12l-4 4"/></svg></div>
+            <div class="dt"><strong>Label every edge — even fractions</strong><span>Show two dimensions or all four, in inches (mixed fractions) or mm. Override any label, flag a cross side, drop a note where it matters.</span></div>
+          </div>
+          <div class="draw-feat reveal d2">
+            <div class="di"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><circle cx="11" cy="11" r="2"/></svg></div>
+            <div class="dt"><strong>A full editor — pen, shapes, text, layers</strong><span>Select, pan, pen, brush, line, rectangle, circle, eraser. Undo/redo, copy-paste, multi-select and nudge — keyboard-first, like the grid.</span></div>
+          </div>
+          <div class="draw-feat reveal d2">
+            <div class="di"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M15 2v5h5"/></svg></div>
+            <div class="dt"><strong>Stitched into the PDF you send</strong><span>Multiple A4 pages, appended after the invoice as original pages — the customer approves the exact cut, the floor builds from the same sheet.</span></div>
+          </div>
+        </div>
+        <div class="hero-cta" style="margin-top:30px;">
+          <a class="btn btn-primary" href="https://app.kanch.app">Try the drawing editor →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INSIDE ============ -->
+<section class="band" id="inside">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow muted"><span class="mk"></span>§04 — Inside the app</span>
+      <h2>From first row to <span class="it">finished document.</span></h2>
+      <p>Open a new PI, pick the customer, type a row — Kanch does the rest, live. The same invoice becomes a <b>Proforma</b>, a <b>Delivery Challan</b>, or a <b>GST Tax Invoice</b>: branded, banked and ready to send. Hover the stack to bring each one forward.</p>
     </div>
     <div class="inside-grid">
       <div class="steps">
@@ -519,20 +922,100 @@
         <div class="step"><span class="n">04</span><div class="b"><strong>Custom keypad, with ½</strong><span>Mixed-fraction inches without leaving the row.</span></div></div>
         <div class="step"><span class="n">05</span><div class="b"><strong>One-tap Done → PDF</strong><span>Branded, banked, ready to send.</span></div></div>
       </div>
-      <div class="pdf" role="img" aria-label="Proforma invoice PDF preview">
-        <span class="stamp">Proforma</span>
-        <span class="doc-eyebrow">Proforma Invoice</span>
-        <div class="doc-co">Sharma Glass Works</div>
-        <div class="doc-rows">
-          <div class="dr"><span class="nm">Tuffon 12mm · 47¾ × 24 ×3</span><span>24.000</span><span>₹3,600</span></div>
-          <div class="dr"><span class="nm">Lacquered 5mm · 53 × 24 ×3</span><span>26.500</span><span>₹3,975</span></div>
-          <div class="dr"><span class="nm">Mirror 6mm · 50½ × 24 ×2</span><span>16.834</span><span>₹2,525</span></div>
-          <div class="dr"><span class="nm">Polish + holes + cutouts</span><span>labor</span><span>₹100</span></div>
+      <div class="docstack" id="docstack" data-pin="pi" role="group" aria-label="Three document types from one invoice">
+        <div class="hint3d"><span class="pulse"></span> Hover a sheet — or tap a tab — to bring it forward</div>
+
+        <!-- GST Tax Invoice (back) -->
+        <div class="doc3d d-gst" data-doc="gst" tabindex="0" aria-label="GST Tax Invoice preview">
+          <div class="sheet">
+            <div class="stamp">Original</div>
+            <div class="dh">
+              <div class="co-block"><span class="logo">S</span><div class="co"><div class="nm">Sharma Glass Works</div><div class="ad">Plot 14, GIDC Estate, Surat 395004</div><div class="gstin">GSTIN 24ABCDE1234F1Z5</div></div></div>
+              <div class="dmeta"><div class="deyebrow">GST Tax Invoice</div><div class="dtitle">Tax Invoice</div><div class="dnum">INV / 26-27 / 014<br/>12 / 06 / 2026</div></div>
+            </div>
+            <div class="billto"><div><div class="l">Bill to</div><div class="v">Darshan Steel</div></div><div class="r">GSTIN 24AABCD9087Q1Z2<br/>Place of supply · 24-GJ</div></div>
+            <div class="tbl gst">
+              <div class="tr h"><span class="nm">Item</span><span class="rr">HSN</span><span class="rr">Taxable</span><span class="rr">GST</span></div>
+              <div class="tr"><span class="nm">Tuffon 12mm · toughened</span><span class="rr">7007</span><span class="rr">3,600</span><span class="rr">648</span></div>
+              <div class="tr"><span class="nm">Lacquered 5mm</span><span class="rr">7005</span><span class="rr">3,975</span><span class="rr">716</span></div>
+              <div class="tr"><span class="nm">Mirror 6mm</span><span class="rr">7009</span><span class="rr">2,525</span><span class="rr">455</span></div>
+              <div class="tr"><span class="nm">Frosted 8mm</span><span class="rr">7005</span><span class="rr">4,500</span><span class="rr">810</span></div>
+              <div class="tr"><span class="nm">Clear float 10mm</span><span class="rr">7005</span><span class="rr">1,575</span><span class="rr">284</span></div>
+              <div class="tr ttl"><span class="nm">TTL</span><span class="rr">—</span><span class="rr">16,600</span><span class="rr">2,988</span></div>
+            </div>
+            <div class="sum">
+              <div class="sl"><span>Taxable value</span><span><b>₹16,600</b></span></div>
+              <div class="sl"><span>CGST 9%</span><span>₹1,494</span></div>
+              <div class="sl"><span>SGST 9%</span><span>₹1,494</span></div>
+              <div class="grand"><span class="gl">Invoice total · incl. GST</span><span class="gv">₹19,588</span></div>
+            </div>
+            <div class="dfoot">
+              <span class="qr" aria-hidden="true"></span>
+              <div class="bank"><div class="l">Amount in words</div><div class="v">Nineteen thousand five<br/>hundred eighty-eight rupees only</div></div>
+            </div>
+          </div>
         </div>
-        <div class="tot"><span class="tl">Amount due</span><span class="tv">₹10,200.00</span></div>
-        <div class="doc-foot">
-          <span class="qr" aria-hidden="true"></span>
-          <span class="ft">Scan to pay · UPI<br/>sharma@okbank · GSTIN 24ABCDE1234F1Z5</span>
+
+        <!-- Delivery Challan (middle) -->
+        <div class="doc3d d-chal" data-doc="chal" tabindex="0" aria-label="Delivery Challan preview">
+          <div class="sheet">
+            <div class="stamp">Delivery</div>
+            <div class="dh">
+              <div class="co-block"><span class="logo">S</span><div class="co"><div class="nm">Sharma Glass Works</div><div class="ad">Plot 14, GIDC Estate, Surat 395004</div><div class="gstin">GSTIN 24ABCDE1234F1Z5</div></div></div>
+              <div class="dmeta"><div class="deyebrow">Delivery Challan</div><div class="dtitle">Challan</div><div class="dnum">DC / 26-27 / 031<br/>12 / 06 / 2026</div></div>
+            </div>
+            <div class="billto"><div><div class="l">Deliver to</div><div class="v">Darshan Steel</div></div><div class="r">Vehicle · GJ-05-JK-4412<br/>Dispatched · Surat</div></div>
+            <div class="tbl chal">
+              <div class="tr h"><span class="nm">Item · size</span><span class="rr">Qty</span><span class="rr">Sqft</span></div>
+              <div class="tr"><span class="nm">Tuffon 12mm · 47¾×24</span><span class="rr">×3</span><span class="rr">24.000</span></div>
+              <div class="tr"><span class="nm">Lacquered 5mm · 53×24</span><span class="rr">×3</span><span class="rr">26.500</span></div>
+              <div class="tr"><span class="nm">Mirror 6mm · 50½×24</span><span class="rr">×2</span><span class="rr">16.834</span></div>
+              <div class="tr"><span class="nm">Frosted 8mm · 36×30</span><span class="rr">×4</span><span class="rr">30.000</span></div>
+              <div class="tr"><span class="nm">Clear float 10mm · 42×18</span><span class="rr">×2</span><span class="rr">10.500</span></div>
+              <div class="tr ttl"><span class="nm">Total</span><span class="rr">14</span><span class="rr">107.8</span></div>
+            </div>
+            <div class="sum">
+              <div class="sl"><span>Goods delivered — no payment due on this document.</span></div>
+              <div class="sign"><div class="s">Receiver's signature</div><div class="s">For Sharma Glass Works</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Proforma Invoice (front) -->
+        <div class="doc3d d-pi" data-doc="pi" tabindex="0" aria-label="Proforma Invoice preview">
+          <div class="sheet">
+            <div class="stamp">Proforma</div>
+            <div class="dh">
+              <div class="co-block"><span class="logo">S</span><div class="co"><div class="nm">Sharma Glass Works</div><div class="ad">Plot 14, GIDC Estate, Surat 395004</div><div class="gstin">GSTIN 24ABCDE1234F1Z5</div></div></div>
+              <div class="dmeta"><div class="deyebrow">Proforma Invoice</div><div class="dtitle">Proforma</div><div class="dnum">PI / 26-27 / 002<br/>12 / 06 / 2026</div></div>
+            </div>
+            <div class="billto"><div><div class="l">Bill to</div><div class="v">Darshan Steel</div></div><div class="r">Surat, Gujarat<br/>Unit · inches</div></div>
+            <div class="tbl pi">
+              <div class="tr h"><span class="nm">Item · size</span><span class="rr">Area</span><span class="rr">Amount</span></div>
+              <div class="tr"><span class="nm">Tuffon 12mm · 47¾×24 ×3</span><span class="rr">24.000</span><span class="rr">3,600</span></div>
+              <div class="tr"><span class="nm">Lacquered 5mm · 53×24 ×3</span><span class="rr">26.500</span><span class="rr">3,975</span></div>
+              <div class="tr"><span class="nm">Mirror 6mm · 50½×24 ×2</span><span class="rr">16.834</span><span class="rr">2,525</span></div>
+              <div class="tr"><span class="nm">Frosted 8mm · 36×30 ×4</span><span class="rr">30.000</span><span class="rr">4,500</span></div>
+              <div class="tr"><span class="nm">Clear float 10mm · 42×18 ×2</span><span class="rr">10.500</span><span class="rr">1,575</span></div>
+              <div class="tr ttl"><span class="nm">TTL</span><span class="rr">107.8</span><span class="rr">16,175</span></div>
+            </div>
+            <div class="sum">
+              <div class="sl"><span>Subtotal</span><span><b>₹16,175</b></span></div>
+              <div class="sl"><span>Polish · holes · cutouts</span><span>₹425</span></div>
+              <div class="sl"><span>Round off</span><span>₹0.00</span></div>
+              <div class="grand"><span class="gl">Amount due</span><span class="gv">₹16,600</span></div>
+            </div>
+            <div class="dfoot">
+              <span class="qr" aria-hidden="true"></span>
+              <div class="bank"><div class="l">Pay via UPI · Bank</div><div class="v">sharma@okhdfc · HDFC Bank<br/>A/c 5010 0••• 2043 · IFSC HDFC0000123</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dlabels">
+          <button type="button" data-pick="pi" class="on">Proforma</button>
+          <button type="button" data-pick="chal">Challan</button>
+          <button type="button" data-pick="gst">GST Invoice</button>
         </div>
       </div>
     </div>
@@ -540,14 +1023,38 @@
 </section>
 
 <!-- ============ AVAILABLE ON ============ -->
-<section class="band" id="download">
+<section class="band alt" id="download">
   <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow muted"><span class="mk"></span>§04 — Available on</span>
-      <h2>One account. <span class="it">Every device</span> on the floor.</h2>
-      <p>Kanch runs in the browser — desktop-first, fully responsive down to the phone in your pocket. Start on the shop tablet, finish on the desktop, send from your phone in the car.</p>
+    <div class="sec-head reveal">
+      <span class="eyebrow muted"><span class="mk"></span>§05 — Available on</span>
+      <h2>Web for the floor. <span class="it">Windows</span> for the desk.</h2>
+      <p>One account, everywhere. Kanch runs in any browser — desktop-first, responsive down to the phone in your pocket — and ships as a native Windows app for the back office. Start on the shop tablet, finish on the desktop, send from your phone in the car.</p>
     </div>
-    <div class="avail">
+
+    <div class="winfeat reveal">
+      <div class="wicon">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.4 10.3 4.3v6.9H3V5.4Zm8.4-1.2L21 3v8.2h-9.6V4.2ZM3 12.8h7.3v6.9L3 18.6v-5.8Zm8.4 0H21V21l-9.6-1.4v-6.8Z"/></svg>
+      </div>
+      <div class="wbody">
+        <span class="tag">New · Desktop app</span>
+        <h3>Kanch for Windows</h3>
+        <p>The full app, installed — opens in a click, keeps working when the shop Wi-Fi drops, and syncs the moment you're back online. Same grid, same fractions, same PDFs as the web.</p>
+        <div class="meta">
+          <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Installs in seconds</span>
+          <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Auto-updates</span>
+          <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Works offline</span>
+        </div>
+      </div>
+      <div class="wcta">
+        <a class="btn btn-light btn-lg" href="https://github.com/G-Shack/kanch-desktop-releases/releases/latest/download/Kanch-Setup.exe" download>
+          <svg class="winmark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.4 10.3 4.3v6.9H3V5.4Zm8.4-1.2L21 3v8.2h-9.6V4.2ZM3 12.8h7.3v6.9L3 18.6v-5.8Zm8.4 0H21V21l-9.6-1.4v-6.8Z"/></svg>
+          Download for Windows
+        </a>
+        <span class="vh">free · 64-bit · .exe installer</span>
+      </div>
+    </div>
+
+    <div class="avail" style="margin-top:20px;">
       <div class="dev">
         <div class="di"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
         <h3>Desktop web</h3>
@@ -571,12 +1078,16 @@
 </section>
 
 <!-- ============ PRICING ============ -->
-<section class="band alt" id="pricing">
+<section class="band" id="pricing">
   <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow muted"><span class="mk"></span>§05 — Pricing</span>
-      <h2>Start free. Pay when it <span class="it">earns its keep.</span></h2>
-      <p>Open the web app and start invoicing — no card, no signup wall — for 7 days. One simple plan after that, billed to your company.</p>
+    <div class="sec-head reveal">
+      <span class="eyebrow muted"><span class="mk"></span>§06 — Pricing</span>
+      <h2>Start free. Then about <span class="it">₹60 a day.</span></h2>
+      <p>Open the web app and start invoicing — no card, no signup wall — for 7 days. After that, one simple plan from <b style="color:var(--fg-primary);">₹1,833/mo</b> — less than the price of a single toughened pane, for your whole shop.</p>
+      <div class="bill-toggle reveal" id="billToggle" role="group" aria-label="Billing period">
+        <button type="button" data-bill="monthly">Monthly</button>
+        <button type="button" data-bill="annual" class="on">Annual <span class="save">Save 17%</span></button>
+      </div>
     </div>
     <div class="price-wrap">
       <div class="price">
@@ -591,9 +1102,11 @@
         <a class="btn btn-ghost" href="https://app.kanch.app">Start free →</a>
         <div class="note">No card · no signup wall</div>
       </div>
-      <div class="price feat-plan">
+      <div class="price feat-plan" id="companyPlan">
+        <span class="save-pill" id="planSave">Save 17% · billed yearly</span>
         <span class="pn">Company</span>
-        <div class="pp"><span class="amt">₹2,199</span><span class="per">/ month</span></div>
+        <div class="pp"><span class="was" id="planWas">₹2,199</span><span class="amt" id="planAmt">₹1,833</span><span class="per">/ mo</span></div>
+        <div class="billed" id="planBilled">billed <b>₹21,999</b>/year · about ₹60/day</div>
         <p class="pd">For the working glass shop — every device, every quote, real-time sync across the team.</p>
         <ul>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Everything in the free trial</li>
@@ -601,18 +1114,18 @@
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Cutting-plan drawings on the PDF</li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Real-time sync across devices</li>
         </ul>
-        <a class="btn btn-accent" href="https://app.kanch.app">Subscribe →</a>
-        <div class="note">Billed monthly · cancel anytime</div>
+        <a class="btn btn-accent" id="planCta" href="https://app.kanch.app">Subscribe → annual</a>
+        <div class="note" id="planNote">Billed yearly · cancel anytime · switch whenever</div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ============ FAQ ============ -->
-<section class="band" id="faq">
+<section class="band alt" id="faq">
   <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow muted"><span class="mk"></span>§06 — Questions</span>
+    <div class="sec-head reveal">
+      <span class="eyebrow muted"><span class="mk"></span>§07 — Questions</span>
       <h2>Things glass people ask us.</h2>
       <p>Can't find what you're looking for? Email <a href="mailto:kanch.help@gmail.com" style="color:var(--fg-link);font-weight:500;">kanch.help@gmail.com</a> — we read every message.</p>
     </div>
@@ -641,6 +1154,14 @@
         <summary><span class="qn">Q.06</span>Can I import my existing customers and glass rates?<span class="pm">+</span></summary>
         <div class="ans">Paste from any spreadsheet. The 15-column grid accepts the same copy-paste shape as Excel and Google Sheets.</div>
       </details>
+      <details>
+        <summary><span class="qn">Q.07</span>What is the cutting-plan drawing feature?<span class="pm">+</span></summary>
+        <div class="ans">A built-in editor that lays your invoice's glass pieces on an A4 sheet at true proportions — length-to-breadth locked so the cut never distorts. Label any edge in mixed-fraction inches or mm, annotate with pen, shapes and text across multiple pages, and Kanch appends the drawing to the PI PDF as original pages. The shop floor cuts exactly what the customer approved.</div>
+      </details>
+      <details>
+        <summary><span class="qn">Q.08</span>Is there a Windows desktop app?<span class="pm">+</span></summary>
+        <div class="ans">Yes — a native Windows app with the same grid, fractions and PDFs as the web. It installs in seconds, keeps working when the shop Wi-Fi drops, auto-updates, and syncs the moment you're back online. <a href="https://github.com/G-Shack/kanch-desktop-releases/releases/latest/download/Kanch-Setup.exe" download style="color:var(--fg-link);font-weight:500;">Download the .exe →</a></div>
+      </details>
     </div>
   </div>
 </section>
@@ -652,7 +1173,10 @@
     <p>Open Kanch in your browser and make your first invoice in five minutes. If you love it, sign up for your company.</p>
     <div class="hero-cta">
       <a class="btn btn-primary btn-lg" href="https://app.kanch.app">Open the web app →</a>
-      <a class="btn btn-ghost btn-lg" href="https://github.com/G-Shack/kanch-desktop-releases/releases/latest/download/Kanch-Setup.exe" download>↓ Download for Windows</a>
+      <a class="btn btn-win btn-lg" href="https://github.com/G-Shack/kanch-desktop-releases/releases/latest/download/Kanch-Setup.exe" download>
+        <svg class="winmark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.4 10.3 4.3v6.9H3V5.4Zm8.4-1.2L21 3v8.2h-9.6V4.2ZM3 12.8h7.3v6.9L3 18.6v-5.8Zm8.4 0H21V21l-9.6-1.4v-6.8Z"/></svg>
+        Download for Windows
+      </a>
       <a class="btn btn-ghost btn-lg" href="support.html">Talk to us</a>
     </div>
   </div>
@@ -677,8 +1201,10 @@
         <h4>Product</h4>
         <a href="#system">The system</a>
         <a href="#features">Features</a>
+        <a href="#drawing">Cutting-plan drawings</a>
         <a href="#inside">Inside the app</a>
         <a href="#pricing">Pricing</a>
+        <a href="https://github.com/G-Shack/kanch-desktop-releases/releases/latest/download/Kanch-Setup.exe" download>Download for Windows</a>
       </div>
       <div class="foot-col">
         <h4>Support</h4>
@@ -700,6 +1226,7 @@
 </footer>
 
 <script>
+  /* ---- mobile nav ---- */
   (function(){
     var hdr = document.querySelector('header.nav');
     var btn = document.getElementById('hambBtn');
@@ -712,6 +1239,151 @@
     }
     btn.addEventListener('click', function(){ setOpen(!hdr.classList.contains('menu-open')); });
     menu.addEventListener('click', function(e){ if(e.target.tagName === 'A') setOpen(false); });
+  })();
+
+  /* ---- interactive fraction keypad (§01.01) ----
+     One 4×4 pad that swaps digits ⇄ fractions in place when ½ is tapped,
+     mirroring the in-app NumericKeyboard / useKeyboardStore behaviour. */
+  (function(){
+    var kp = document.getElementById('kp');
+    if(!kp) return;
+    var grid  = document.getElementById('kpGrid');
+    var field = document.getElementById('kpField');
+    var conv  = document.getElementById('kpConv');
+    var NUMERIC  = [['1','2','3','/'],['4','5','6','space'],['7','8','9','⌫'],['½','0','.','Done']];
+    var FRACTION = [['1/16','1/8','3/16','1/4'],['5/16','3/8','7/16','1/2'],['9/16','5/8','11/16','3/4'],['½','13/16','7/8','15/16']];
+    var mode = 'numeric', text = '36';
+
+    function keyClass(k){
+      if(k === 'Done') return 'k confirm';
+      if(k === '⌫') return 'k del';
+      if(k === '½') return 'k half';
+      if(k === 'space' || k === '/' || k === '.') return 'k op';
+      if(k.indexOf('/') > -1) return 'k frac';
+      return 'k';
+    }
+    function renderKeys(){
+      var layout = mode === 'fraction' ? FRACTION : NUMERIC;
+      grid.innerHTML = '';
+      layout.forEach(function(row){ row.forEach(function(k){
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = keyClass(k); b.setAttribute('data-k', k);
+        b.innerHTML = '<span class="glyph">' + (k === 'space' ? '␣' : k) + '</span>' +
+          (k === '½' ? '<span class="hint">tap ½ for fractions</span>' : '');
+        grid.appendChild(b);
+      }); });
+      kp.classList.toggle('fracmode', mode === 'fraction');
+    }
+    function toDecimal(t){
+      t = t.trim(); if(!t) return 0;
+      return t.split(/\s+/).reduce(function(sum, p){
+        if(p.indexOf('/') > -1){ var q = p.split('/'); return sum + (+q[1] ? (+q[0]) / (+q[1]) : 0); }
+        return sum + (parseFloat(p) || 0);
+      }, 0);
+    }
+    function renderScreen(){
+      var body = text ? text.replace(/(\d+\/\d+|\/\d*|\d+\/)/g, '<span class="frac">$1</span>')
+                      : '<span class="ph">0</span>';
+      field.innerHTML = body + '<span class="care"></span>';
+      var dec = toDecimal(text);
+      var disp = (dec % 1 === 0) ? dec.toFixed(3) : dec.toFixed(4);
+      conv.innerHTML = '<b>' + (text || '0') + '″</b> <span class="arr">→</span> actual L <b>' + disp + ' in</b>';
+    }
+    function press(k){
+      if(k === 'Done'){ kp.classList.add('done-flash'); setTimeout(function(){ kp.classList.remove('done-flash'); }, 450); return; }
+      if(k === '⌫'){ text = text.slice(0, -1); renderScreen(); return; }
+      if(k === '½'){ mode = mode === 'numeric' ? 'fraction' : 'numeric'; kp.classList.add('used'); renderKeys(); return; }
+      if(k === 'space'){ text += ' '; renderScreen(); return; }
+      if(k === '/'){ text += '/'; renderScreen(); return; }
+      if(k === '.'){ if(text.indexOf('.') === -1) text += '.'; renderScreen(); return; }
+      if(k.indexOf('/') > -1){ // a fraction key: space after a trailing digit, then back to numeric
+        text = (text && /\d$/.test(text)) ? text + ' ' + k : text + k;
+        mode = 'numeric'; renderKeys(); renderScreen(); return;
+      }
+      text += k; renderScreen(); // digit
+    }
+    grid.addEventListener('click', function(e){ var b = e.target.closest('[data-k]'); if(b) press(b.getAttribute('data-k')); });
+    var reset = document.getElementById('kpReset');
+    if(reset) reset.addEventListener('click', function(){ text = ''; mode = 'numeric'; renderKeys(); renderScreen(); });
+    renderKeys(); renderScreen();
+  })();
+
+  /* ---- pricing: monthly / annual billing toggle ---- */
+  (function(){
+    var t = document.getElementById('billToggle'); if(!t) return;
+    var was = document.getElementById('planWas'), amt = document.getElementById('planAmt'),
+        billed = document.getElementById('planBilled'), save = document.getElementById('planSave'),
+        cta = document.getElementById('planCta'), note = document.getElementById('planNote');
+    var DATA = {
+      annual:  { was:'₹2,199', amt:'₹1,833', billed:'billed <b>₹21,999</b>/year · about ₹60/day', save:'Save 17% · billed yearly', show:true,  cta:'Subscribe → annual',  note:'Billed yearly · cancel anytime · switch whenever' },
+      monthly: { was:'₹2,999', amt:'₹2,199', billed:'billed <b>monthly</b> · about ₹73/day',       save:'',                       show:false, cta:'Subscribe → monthly', note:'Billed monthly · cancel anytime' }
+    };
+    function set(bill){
+      var d = DATA[bill]; if(!d) return;
+      was.textContent = d.was; amt.textContent = d.amt; billed.innerHTML = d.billed;
+      save.textContent = d.save; save.style.display = d.show ? '' : 'none';
+      cta.textContent = d.cta; note.textContent = d.note;
+      t.querySelectorAll('[data-bill]').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-bill') === bill); });
+    }
+    t.addEventListener('click', function(e){ var b = e.target.closest('[data-bill]'); if(b) set(b.getAttribute('data-bill')); });
+  })();
+
+  /* ---- document stack (PI / Challan / GST) ----
+     Hover/focus is pure CSS (stable hit-boxes, no jitter). JS only sets the
+     "pinned" sheet for touch / tab clicks. */
+  (function(){
+    var stack = document.getElementById('docstack');
+    if(!stack) return;
+    var btns = stack.querySelectorAll('.dlabels [data-pick]');
+    function pin(d){
+      stack.setAttribute('data-pin', d);
+      btns.forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-pick') === d); });
+    }
+    stack.querySelectorAll('.doc3d').forEach(function(c){
+      c.addEventListener('click', function(){ pin(c.getAttribute('data-doc')); });
+    });
+    btns.forEach(function(b){ b.addEventListener('click', function(){ pin(b.getAttribute('data-pick')); }); });
+  })();
+
+  /* ---- drawing editor: tool highlight ---- */
+  (function(){
+    var tools = document.getElementById('edTools');
+    if(!tools) return;
+    tools.addEventListener('click', function(e){
+      var b = e.target.closest('.et-btn[data-tool]'); if(!b) return;
+      tools.querySelectorAll('.et-btn').forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+    });
+  })();
+
+  /* ---- scroll reveal ---- */
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!els.length) return;
+    if(!('IntersectionObserver' in window)){ els.forEach(function(el){ el.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
+    els.forEach(function(el){ io.observe(el); });
+  })();
+
+  /* ---- hero stat count-up ---- */
+  (function(){
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var nums = document.querySelectorAll('[data-count]');
+    nums.forEach(function(el){
+      var target = +el.getAttribute('data-count'), suffix = el.getAttribute('data-suffix') || '';
+      if(reduce){ el.textContent = target + suffix; return; }
+      var start = null, dur = 950;
+      function step(ts){
+        if(!start) start = ts;
+        var p = Math.min((ts - start) / dur, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased) + suffix;
+        if(p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
   })();
 </script>
 
